@@ -1,17 +1,23 @@
 import { Outlet } from 'react-router-dom'
+
 import { Navbar } from '@/components/navigation/Navbar'
 import { Sidebar } from '@/components/navigation/Sidebar'
 
-/** Layout para todas las rutas privadas bajo /app. */
 export function AppLayout() {
   return (
-    <div className="flex h-screen flex-col">
-      <Navbar />
-      <div className="flex flex-1 overflow-hidden">
+    <div className="min-h-screen bg-surface">
+      <div className="flex min-h-screen">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto p-6">
-          <Outlet />
-        </main>
+
+        <div className="flex min-w-0 flex-1 flex-col">
+          <Navbar />
+
+          <main className="flex-1 overflow-y-auto">
+            <div className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
+              <Outlet />
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   )

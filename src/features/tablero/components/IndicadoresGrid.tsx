@@ -1,18 +1,61 @@
-import { IndicadorCard } from './IndicadorCard'
-import type { IndicadoresDelDia } from '../types/tablero.types'
+import {
+  AlertTriangle,
+  CalendarDays,
+  DoorOpen,
+  Users,
+} from 'lucide-react'
 
-export function IndicadoresGrid({ indicadores }: { indicadores: IndicadoresDelDia }) {
+import type { IndicadoresDelDia } from '../types/tablero.types'
+import { IndicadorCard } from './IndicadorCard'
+
+export function IndicadoresGrid({
+  indicadores,
+}: {
+  indicadores: IndicadoresDelDia
+}) {
+  const situacionesAtencion =
+    indicadores.visitasPendientesHoy +
+    indicadores.personasConPermanenciaExcedida
+
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <IndicadorCard etiqueta="Visitas programadas hoy" valor={indicadores.visitasProgramadasHoy} />
-      <IndicadorCard etiqueta="Visitas ingresadas hoy" valor={indicadores.visitasIngresadasHoy} />
-      <IndicadorCard etiqueta="Visitas pendientes hoy" valor={indicadores.visitasPendientesHoy} />
-      <IndicadorCard etiqueta="Visitas canceladas hoy" valor={indicadores.visitasCanceladasHoy} />
-      <IndicadorCard etiqueta="Personas presentes ahora" valor={indicadores.personasPresentesAhora} />
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <IndicadorCard
-        etiqueta="Con permanencia excedida"
-        valor={indicadores.personasConPermanenciaExcedida}
-        destacado={indicadores.personasConPermanenciaExcedida > 0}
+        etiqueta="Personas dentro"
+        valor={indicadores.personasPresentesAhora}
+        descripcion="Ahora"
+        icon={Users}
+        variant="success"
+      />
+
+      <IndicadorCard
+        etiqueta="Ingresos de hoy"
+        valor={indicadores.visitasIngresadasHoy}
+        descripcion="Hoy"
+        icon={DoorOpen}
+        variant="success"
+      />
+
+      <IndicadorCard
+        etiqueta="Visitas programadas"
+        valor={indicadores.visitasProgramadasHoy}
+        descripcion="Hoy"
+        icon={CalendarDays}
+      />
+
+      <IndicadorCard
+        etiqueta="Requieren atención"
+        valor={situacionesAtencion}
+        descripcion={
+          situacionesAtencion > 0
+            ? 'Por revisar'
+            : 'Todo en orden'
+        }
+        icon={AlertTriangle}
+        variant={
+          situacionesAtencion > 0
+            ? 'warning'
+            : 'default'
+        }
       />
     </div>
   )

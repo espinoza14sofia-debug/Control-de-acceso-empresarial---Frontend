@@ -17,18 +17,45 @@ export function UsuariosListPage() {
   const { activar, desactivar } = useActivarDesactivarUsuario()
 
   return (
-    <div>
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-ink-900">Usuarios y empleados</h1>
+    <div className="space-y-6">
+      {/* Encabezado */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-[#7f5539]">
+            Usuarios
+          </h1>
+
+          <p className="mt-1 text-sm text-[#9c6644]">
+            Gestiona los usuarios, empleados y sus accesos a la organización.
+          </p>
+        </div>
+
         <Link to={RUTAS.USUARIO_NUEVO}>
-          <Button>Nuevo usuario</Button>
+          <Button
+            className="flex items-center gap-2 rounded-lg bg-[#7f5539] px-5 py-2.5 text-white shadow-sm transition-colors hover:bg-[#9c6644]"
+          >
+            <span className="material-symbols-outlined text-[20px]">
+              add
+            </span>
+            Nuevo usuario
+          </Button>
         </Link>
       </div>
 
-      <UsuarioFiltros filtros={filtros} onCambiar={setFiltros} />
+      {/* Filtros */}
+      <UsuarioFiltros
+        filtros={filtros}
+        onCambiar={setFiltros}
+      />
 
+      {/* Estados */}
       {isLoading && <LoadingState />}
-      {isError && <ErrorState onReintentar={() => void refetch()} />}
+
+      {isError && (
+        <ErrorState onReintentar={() => void refetch()} />
+      )}
+
+      {/* Tabla */}
       {usuarios && (
         <UsuariosTabla
           usuarios={usuarios}
