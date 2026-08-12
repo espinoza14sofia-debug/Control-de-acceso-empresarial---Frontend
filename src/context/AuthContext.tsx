@@ -6,11 +6,12 @@ import { guardarTokens, limpiarTokens, obtenerAccessToken } from '@/services/api
 const USUARIO_STORAGE_KEY = 'controlacceso.usuario'
 
 interface AuthContextValue {
-  usuario: UsuarioSesion | null
-  estaAutenticado: boolean
-  cargandoSesion: boolean
-  iniciarSesion: (email: string, password: string) => Promise<void>
-  cerrarSesion: () => Promise<void>
+    usuario: UsuarioSesion | null
+    estaAutenticado: boolean
+    cargandoSesion: boolean
+    iniciarSesion: (email: string, password: string) => Promise<void>
+    cerrarSesion: () => Promise<void>
+    actualizarUsuarioSesion: (datos: Partial<UsuarioSesion>) => void
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -42,20 +43,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUsuario(respuesta.usuario)
   }, [])
 
-  const cerrarSesion = useCallback(async () => {
-    try {
-      await autenticacionService.logout()
-    } finally {
-      limpiarTokens()
-      localStorage.removeItem(USUARIO_STORAGE_KEY)
-      setUsuario(null)
-    }
-  }, [])
+    const cerrarSesion = useCallback(async () => {
+        try {
+            await autenticacionService.logout()
+        } finally {
+            limpiarTokens()
+            localStorage.removeItem(USUARIO_STORAGE_KEY)
+            setUsuario(null)
+        }
+    }, [])
 
-  return (
-    <AuthContext.Provider
-      value={{ usuario, estaAutenticado: !!usuario, cargandoSesion, iniciarSesion, cerrarSesion }}
-    >
+    const actualizarUsuarioSesion = useCallback((datos: Partial<UsuarioSesion>) => {
+        setUsuario((actual) => {
+            if (!actual) return actual
+            const actualizado = { ...actual, ...datos }
+            localStorage.setItem(USUARIO_STORAGE_KEY, JSON.stringify(actualizado))
+            return actualizado
+        })
+    }, [])
+
+    return (
+        <AuthContext.Provider
+            value={{
+                usuario,
+                estaAutenticado: !!usuario,
+                cargandoSesion,
+                iniciarSesion,
+                cerrarSesion,
+                actualizarUsuarioSesion,
+            }}
+        >
       {children}
     </AuthContext.Provider>
   )
