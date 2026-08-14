@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useState, type ReactNode } from 'react'
+﻿import { createContext, useCallback, useEffect, useState, type ReactNode } from 'react'
 import type { UsuarioSesion } from '@/features/auth/types/auth.types'
 import { autenticacionService } from '@/features/auth/services/autenticacionService'
 import { guardarTokens, limpiarTokens, obtenerAccessToken } from '@/services/apiClient'
@@ -30,8 +30,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const token = obtenerAccessToken()
     const usuarioGuardado = localStorage.getItem(USUARIO_STORAGE_KEY)
-    if (token && usuarioGuardado) {
-      setUsuario(JSON.parse(usuarioGuardado) as UsuarioSesion)
+    if (token && usuarioGuardado && usuarioGuardado !== 'undefined') {
+      try {
+        setUsuario(JSON.parse(usuarioGuardado) as UsuarioSesion)
+      } catch {
+        limpiarTokens()
+        localStorage.removeItem(USUARIO_STORAGE_KEY)
+      }
     }
     setCargandoSesion(false)
   }, [])
@@ -77,3 +82,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     </AuthContext.Provider>
   )
 }
+
